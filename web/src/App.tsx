@@ -3,6 +3,7 @@ import { db } from "./firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore"; // this dependency does not support latest version of firebase
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { Data } from "./components/Data";
 
 export default function App() {
   const [formInput, setFormInput] = useState("");
@@ -21,7 +22,7 @@ export default function App() {
             setQueryText(formInput);
           }
         }}
-        error={!movies && !loading}
+        error={(!movies || (!!queryText && movies.length === 0)) && !loading}
         label="Country"
       />
       <br />
@@ -29,14 +30,7 @@ export default function App() {
       {loading ? (
         <CircularProgress />
       ) : (
-        <span>
-          {movies &&
-            movies.map((movie) => (
-              <React.Fragment key={movie.id}>
-                {JSON.stringify(movie)},{" "}
-              </React.Fragment>
-            ))}
-        </span>
+        <span>{movies && movies.length !== 0 && <Data movies={movies} />}</span>
       )}
       {error}
     </div>
