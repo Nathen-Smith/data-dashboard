@@ -1,7 +1,9 @@
+asyncio==3.4.3
 CacheControl==0.12.6
 cachetools==4.2.2
 certifi==2021.5.30
 charset-normalizer==2.0.4
+DateTime==4.3
 firebase-admin==5.0.2
 google-api-core==1.31.2
 google-api-python-client==2.19.1
@@ -29,3 +31,4 @@ rsa==4.7.2
 six==1.16.0
 uritemplate==3.0.1
 urllib3==1.26.6
+zope.interface==5.4.0
