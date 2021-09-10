@@ -1,5 +1,6 @@
 import React from "react";
 import { DocumentData } from "firebase/firestore";
+// recharts for dataviz?
 
 interface DataProps {
   movies: DocumentData[];
@@ -15,29 +16,30 @@ interface MovieMetadata {
   };
   budget: number;
   genres: [{ id: number; name: string }];
-  // homepage:
+  homepage: string;
   id: number;
-  // imdb_id:
-  // original_language:
-  // original_title:
-  // overview:
-  // popularity:
-  // poster_path:
-  // production_companies:
-  production_countries: {
-    iso_3166_1: string;
-    name: string;
-  };
-  // release_date:
-  // revenue:
-  // runtime:
-  // spoken_languages:
-  // status:
-  // tagline:
-  // title:
-  // video:
-  // vote_average:
-  // vote_count:
+  imdb_id: string;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  production_companies: [{ id: number; name: string }];
+  // production_countries: {
+  //   iso_3166_1: string;
+  //   name: string;
+  // };
+  production_countries: [string];
+  release_date: Date;
+  revenue: number;
+  runtime: number;
+  spoken_languages: [{ iso_639_1: string; name: string }];
+  status: string;
+  tagline: string;
+  title: string;
+  video: false;
+  vote_average: number;
+  vote_count: number;
 }
 
 export const Data: React.FC<DataProps> = ({ movies }) => {
@@ -53,15 +55,7 @@ export const Data: React.FC<DataProps> = ({ movies }) => {
       <div>Total budget: {totalBudget}</div>
       <br />
 
-      <span>
-        {/* {movies.map((movie) => (
-          <React.Fragment key={movie.id}>
-            {JSON.stringify(movie)},{" "}
-          </React.Fragment>
-        ))} */}
-        {/* {obj[0]} */}
-        {JSON.stringify(moviesObj)}
-      </span>
+      <span>{/* {JSON.stringify(moviesObj)} */}</span>
     </div>
   );
 };

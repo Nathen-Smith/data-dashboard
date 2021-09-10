@@ -9,7 +9,9 @@ export default function App() {
   const [formInput, setFormInput] = useState("");
   const [queryText, setQueryText] = useState("");
   const [movies, loading, error] = useCollectionData(
-    db.collection("movies").where("production_countries.name", "==", queryText)
+    db
+      .collection("movies")
+      .where("production_countries", "array-contains", queryText)
   );
 
   return (
