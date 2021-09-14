@@ -1,6 +1,6 @@
 import React from "react";
 import { DocumentData } from "firebase/firestore";
-// recharts for dataviz?
+import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from "recharts";
 
 interface DataProps {
   movies: DocumentData[];
@@ -42,20 +42,68 @@ interface MovieMetadata {
   vote_count: number;
 }
 
+interface GenreData {
+  count: number;
+  genre: string;
+}
+
+interface GenresDataArr extends Array<GenreData> {}
+
 export const Data: React.FC<DataProps> = ({ movies }) => {
-  const moviesMap = movies.map((movie) => JSON.stringify(movie));
-  const moviesObj = moviesMap.map<MovieMetadata>((movie) => JSON.parse(movie));
+  /*  We can use JSON.stringify to convert Firebase's type of DocumentData,
+      then use JSON.parse to get the string into an array of objects where
+      we define the types.  */
+  const moviesObj = movies.map<MovieMetadata>((movie) =>
+    JSON.parse(JSON.stringify(movie))
+  );
+
   const totalBudget = moviesObj.reduce(function (a, b) {
     return b.budget ? a + b.budget : a;
   }, 0);
+  const countMoviesWithRatings = moviesObj.reduce(function (a, b) {
+    return b.vote_average ? a + 1 : a;
+  }, 0);
+  const sumAvgRatings = moviesObj.reduce(function (a, b) {
+    return b.vote_average ? a + b.vote_average : a;
+  }, 0);
+  const avgRatings = (sumAvgRatings / countMoviesWithRatings).toFixed(2);
+
+  /*  First get a count of all the genres in a Map, then convert to
+      an array of objects so it can be plotted  */
+  var genresMap = new Map<string, number>();
+  moviesObj.forEach((movie) => {
+    movie.genres.forEach((genre) => {
+      genresMap.has(genre.name)
+        ? genresMap.set(genre.name, genresMap.get(genre.name)! + 1)
+        : genresMap.set(genre.name, 1);
+    });
+  });
+  var res: GenresDataArr = [];
+  genresMap.forEach((count, genre) => {
+    res.push({ count, genre });
+  });
+
+  function numberWithCommas(x: number) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } // https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+  const totalBudgetWithCommas = numberWithCommas(totalBudget);
+  const moviesCountWithCommas = numberWithCommas(moviesObj.length);
 
   return (
     <div>
-      <div>Movies count: {moviesObj.length}</div>
-      <div>Total budget: {totalBudget}</div>
+      <br />
+      <div>Movies count: {moviesCountWithCommas}</div>
+      <div>Total budget: ${totalBudgetWithCommas}</div>
+      <div>Average ratings: {avgRatings}</div>
       <br />
 
-      <span>{/* {JSON.stringify(moviesObj)} */}</span>
+      <BarChart width={730} height={250} data={res}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="genre" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="count" fill="#82ca9d" />
+      </BarChart>
     </div>
   );
 };

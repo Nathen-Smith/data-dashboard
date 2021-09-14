@@ -27,6 +27,7 @@ def process_data(movie_data):
             processed_data.append(datetime.datetime(
                 int(element[0:4]), int(element[5:7]), int(element[8:10])))
         else:
+            # eval will break on strings but will detect other types correctly
             try:
                 processed_data.append(eval(element))
             except:
@@ -35,6 +36,8 @@ def process_data(movie_data):
 
 
 async def add_data_types(data_types, movie_data):
+    # each document is a JSON in Firestore and can be made with dictionary
+    # https://github.com/GoogleCloudPlatform/python-docs-samples/blob/a5c2f3ecc9bec8fedc0bf0ad2c8db08bc23c9f37/firestore/cloud-async-client/snippets.py#L188-L189
     processed_data = dict(zip(data_types, process_data(movie_data)))
     db = firestore.AsyncClient()
     await db.collection('movies').add(processed_data)
@@ -44,11 +47,12 @@ async def main():
     with open('./assets/movies_metadata.csv', newline='') as csvfile:
         reader = csv.reader(csvfile)
         data_types = next(reader)
-        limit = 0
+        # limit = 0
         for row in reader:
+            # if limit >= 4000:
             await add_data_types(data_types, row)
-            limit = limit + 1
-            if limit == 15000:
-                break
+            # limit = limit + 1
+            # if limit == 5000:
+            #     break
 
 asyncio.run(main())

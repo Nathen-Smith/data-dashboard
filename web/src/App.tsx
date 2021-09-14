@@ -20,12 +20,11 @@ export default function App() {
         id="standard-basic"
         onChange={(e) => setFormInput(e.target.value)}
         onKeyPress={(e) => {
-          if (e.key === "Enter") {
-            setQueryText(formInput);
-          }
+          e.key === "Enter" && setQueryText(formInput);
         }}
         error={(!movies || (!!queryText && movies.length === 0)) && !loading}
         label="Country"
+        style={{ width: 300 }}
       />
       <br />
 
