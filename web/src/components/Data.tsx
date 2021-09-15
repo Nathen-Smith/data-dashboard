@@ -25,6 +25,8 @@ interface MovieMetadata {
   popularity: number;
   poster_path: string;
   production_companies: [{ id: number; name: string }];
+  // production_countries is replaced with array of the names as keeping it as is cannot be queried
+  // (is an array of objects and there is no way to search for one field in each object within the array)
   // production_countries: {
   //   iso_3166_1: string;
   //   name: string;
@@ -57,27 +59,28 @@ export const Data: React.FC<DataProps> = ({ movies }) => {
     JSON.parse(JSON.stringify(movie))
   );
 
-  const totalBudget = moviesObj.reduce(function (a, b) {
-    return b.budget ? a + b.budget : a;
-  }, 0);
-  const countMoviesWithRatings = moviesObj.reduce(function (a, b) {
-    return b.vote_average ? a + 1 : a;
-  }, 0);
-  const sumAvgRatings = moviesObj.reduce(function (a, b) {
-    return b.vote_average ? a + b.vote_average : a;
-  }, 0);
-  const avgRatings = (sumAvgRatings / countMoviesWithRatings).toFixed(2);
+  const moviesLength = moviesObj.length;
+  var len = moviesLength,
+    totalBudget = 0,
+    countMoviesWithRatings = 0,
+    sumAvgRatings = 0;
+  var genresMap = new Map<string, number>(); // map of each genre to its frequency
 
-  /*  First get a count of all the genres in a Map, then convert to
-      an array of objects so it can be plotted  */
-  var genresMap = new Map<string, number>();
-  moviesObj.forEach((movie) => {
-    movie.genres.forEach((genre) => {
+  while (len--) {
+    moviesObj[len].budget && (totalBudget += moviesObj[len].budget);
+    moviesObj[len].vote_average &&
+      (countMoviesWithRatings += 1) &&
+      (sumAvgRatings += moviesObj[len].vote_average);
+    moviesObj[len].genres.forEach((genre) => {
       genresMap.has(genre.name)
         ? genresMap.set(genre.name, genresMap.get(genre.name)! + 1)
         : genresMap.set(genre.name, 1);
     });
-  });
+  }
+
+  const avgRatings = (sumAvgRatings / countMoviesWithRatings).toFixed(2);
+
+  // genresMap has no types, put in array of objects so recharts can graph properly
   var res: GenresDataArr = [];
   genresMap.forEach((count, genre) => {
     res.push({ count, genre });
@@ -87,7 +90,7 @@ export const Data: React.FC<DataProps> = ({ movies }) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   } // https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
   const totalBudgetWithCommas = numberWithCommas(totalBudget);
-  const moviesCountWithCommas = numberWithCommas(moviesObj.length);
+  const moviesCountWithCommas = numberWithCommas(moviesLength);
 
   return (
     <div>
@@ -97,7 +100,7 @@ export const Data: React.FC<DataProps> = ({ movies }) => {
       <div>Average ratings: {avgRatings}</div>
       <br />
 
-      <BarChart width={730} height={250} data={res}>
+      <BarChart width={830} height={250} data={res}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="genre" />
         <YAxis />
