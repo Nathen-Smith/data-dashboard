@@ -1,7 +1,7 @@
 # real-time-data-dashboard
 
 <p align="center">
-  <img src="https://media.giphy.com/media/4nKw0b5dIlKS0k0fLn/giphy.gif?cid=790b7611e0fa1c68fb6b1325fda405083ddfb6abf82caca6&rid=giphy.gif&ct=g" width="480" height="270" frameBorder="0" alt="demo gif"/>
+  <img src="https://media.giphy.com/media/4nKw0b5dIlKS0k0fLn/giphy.gif?cid=790b7611e0fa1c68fb6b1325fda405083ddfb6abf82caca6&rid=giphy.gif&ct=g" width="576" height="324" frameBorder="0" alt="demo gif"/>
  </p>
  
 ## Documentation
