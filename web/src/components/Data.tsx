@@ -67,10 +67,14 @@ export const Data: React.FC<DataProps> = ({ movies }) => {
   var genresMap = new Map<string, number>(); // map of each genre to its frequency
 
   while (len--) {
+    /*  loop over every movie in the list of documents and calculate statistics.
+        sometimes a movie does not have the required field so we need to check if it is present
+        to avoid undefined values.  */
     moviesObj[len].budget && (totalBudget += moviesObj[len].budget);
     moviesObj[len].vote_average &&
       (countMoviesWithRatings += 1) &&
       (sumAvgRatings += moviesObj[len].vote_average);
+    // get genre mapped to its frequency
     moviesObj[len].genres.forEach((genre) => {
       genresMap.has(genre.name)
         ? genresMap.set(genre.name, genresMap.get(genre.name)! + 1)

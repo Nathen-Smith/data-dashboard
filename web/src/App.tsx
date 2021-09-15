@@ -31,6 +31,7 @@ export default function App() {
       {loading ? (
         <CircularProgress />
       ) : (
+        // when movies has been retrieved and is not empty, pass data to Data component
         <span>{movies && movies.length !== 0 && <Data movies={movies} />}</span>
       )}
       {error}
