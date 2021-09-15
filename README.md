@@ -1,8 +1,13 @@
-# data-dashboard
+# real-time-data-dashboard
 
 <p align="center">
   <img src="https://media.giphy.com/media/4nKw0b5dIlKS0k0fLn/giphy.gif?cid=790b7611e0fa1c68fb6b1325fda405083ddfb6abf82caca6&rid=giphy.gif&ct=g" width="480" height="270" frameBorder="0" alt="demo gif"/>
  </p>
+ 
+## Documentation
+The app is located in the web/ folder and the main files to pay attention to are src/App.tsx and src/components/Data.tsx. App is what is displayed on start up, and contains a text field where one will input a country to monitor the movies of. When the data is ready, it is passed to Data.tsx where statistics and the bar chart of genres is calculated and displayed. When there are changes to the result of the country query snapshotted, a re-render will trigger with the new movies data.
+
+The admin/ folder contains a Python script along with the data to insert and a README with instructions on how to use. Also, the Usage section below details prerequisites and specific commands to use.
 
 #### Design
 The real time aspect of the system is made possible by Firebase Cloud Firestore’s ```firebase.firestore.QuerySnapshot``` method. The flow works like so: user inputs a country to search for, and a collection of documents whose ```production_countries``` field contains the country is returned and listened to for real time changes. Additionally, this snapshot is not limited to the documents returned from the initial query, but new documents created with matching fields queried will be added to the snapshot. Since one cannot search for a map element in an array of maps in Firestore, ```production_countries``` is changed to an array of country names. Firestore was chosen for the real time aspect as it is easy to implement and SQL methods are complex and not very scalable: a real time SQL implementation often involves triggers to put changes on a table that gets polled, which would double each operation and would be inefficient.
